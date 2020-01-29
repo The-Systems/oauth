@@ -1,5 +1,5 @@
 # LOGIN EXAMPLE FOR THE-SYSTEMS OAUTH2 API
-######(Language: PHP)
+###### (Language: PHP)
 
 TokenURL: https://oauth.the-systems.eu/token.php
 
@@ -8,4 +8,4 @@ AuthorizeURL: https://oauth.the-systems.eu/authorize.php
 
 
 
-##You can create a APP at https://oauth.the-systems.eu
+## You can create a APP at https://oauth.the-systems.eu
