@@ -8,4 +8,4 @@ AuthorizeURL: https://oauth.the-systems.eu/authorize.php
 
 
 
-## You can create a APP at https://oauth.the-systems.eu
+## You can create an APP at https://oauth.the-systems.eu
