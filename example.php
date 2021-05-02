@@ -3,18 +3,19 @@ $client_id = "CLIENTID";
 $client_secret = "CLIENTSECRET";
 $redirect_uri = "REDIRECTURI";
 $scope = "basic email";
+$state = "login";
 
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+$url_token = "https://oauth2.the-systems.eu/oauth/token";
+$url_resource = "https://oauth2.the-systems.eu/oauth/resource/user";
+$url_auth = "https://oauth2.the-systems.eu/oauth/authorize";
+
 if (isset($_GET["error"])) {
     echo json_encode(array("message" => "Authorization Error"));
 } elseif (isset($_GET["code"])) {
-    $token_request = "https://oauth.the-systems.eu/token.php";
     $token = curl_init();
     curl_setopt_array($token, array(
-        CURLOPT_URL => $token_request,
+        CURLOPT_URL => $$url_token,
         CURLOPT_POST => 1,
         CURLOPT_POSTFIELDS => array(
             "grant_type" => "authorization_code",
@@ -27,35 +28,33 @@ if (isset($_GET["error"])) {
     curl_setopt($token, CURLOPT_RETURNTRANSFER, true);
     $resp = json_decode(curl_exec($token));
     curl_close($token);
-
     if (isset($resp->access_token)) {
         $refresh_token = $resp->refresh_token;
         $access_token = $resp->access_token;
-        $info_request = "https://oauth.the-systems.eu/api/userinfo/index.php";
         $info = curl_init();
-
         curl_setopt_array($info, array(
-            CURLOPT_URL => $info_request,
+            CURLOPT_URL => $url_resource,
             CURLOPT_CUSTOMREQUEST => "POST",
-            CURLOPT_POSTFIELDS => "access_token=" . $access_token,
             CURLOPT_HTTPHEADER => array(
+                "Authorization: Bearer ".$access_token,
                 "cache-control: no-cache",
-                "content-type: application/x-www-form-urlencoded"
+                "content-type: application/json"
             ),
         ));
         curl_setopt($info, CURLOPT_RETURNTRANSFER, true);
         $inforesp = json_decode(curl_exec($info));
         curl_close($info);
-
-
-        echo '<h4>Willkommen, ' . $inforesp->nickname . '</h4><h5>E-Mail: ' . $inforesp->email . '</h5><img src="' . $inforesp->profilpic . '"</img><p>Refreshtoken: ' . $refresh_token . '</p>';
-
+		if (isset($inforesp->error)) {
+			echo json_encode(array("message" => "Request Error", "error" => $inforesp));
+		} else {
+			echo '<h4>Willkommen, ' . $inforesp->username . '</h4><h5>E-Mail: ' . $inforesp->email . '</h5><img src="' . $inforesp->icon . '"</img><p>Refreshtoken: ' . $refresh_token . '</p>';
+		}
 
     } else {
-        echo json_encode(array("message" => "Authentication Error"));
+        echo json_encode(array("message" => "Authentication Error", "error" => $resp));
     }
 } else {
-    header("Location: http://oauth.the-systems.eu/authorize.php?response_type=code&client_id=" . $client_id . "&state=xyz&scope=" . rawurlencode($scope) . "&redirect_uri=" . $redirect_uri);
+    header("Location: ".$url_auth."?response_type=code&client_id=" . $client_id . "&state=".$state."&scope=" . rawurlencode($scope) . "&redirect_uri=" . $redirect_uri);
     echo json_encode(array("message" => "No Code Provided"));
 }
 ?>
