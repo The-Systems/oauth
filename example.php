@@ -15,7 +15,7 @@ if (isset($_GET["error"])) {
 } elseif (isset($_GET["code"])) {
     $token = curl_init();
     curl_setopt_array($token, array(
-        CURLOPT_URL => $$url_token,
+        CURLOPT_URL => $url_token,
         CURLOPT_POST => 1,
         CURLOPT_POSTFIELDS => array(
             "grant_type" => "authorization_code",
