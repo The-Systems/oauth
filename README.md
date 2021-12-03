@@ -30,6 +30,11 @@ ResourceURL: https://oauth2.the-systems.eu/oauth/resource/user + https://oauth2.
 AuthorizeURL: https://oauth2.the-systems.eu/oauth/authorize <br>
 > Example: https://oauth2.the-systems.eu/oauth/authorize?response_type=code&client_id=CLIENTID&state=xyz&redirect_uri=domain.de
 
+## OpenID
+
+OpenID-URL:
+https://oauth2.the-systems.eu/.well-known/openid-configuration
+Needed Scope: "openid"
 
 ## Support
 
